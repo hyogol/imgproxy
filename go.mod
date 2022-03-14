@@ -17,7 +17,6 @@ require (
 	github.com/ianlancetaylor/cgosymbolizer v0.0.0-20220217162856-c813f11194b9 // indirect
 	github.com/matoous/go-nanoid/v2 v2.0.0
 	github.com/newrelic/go-agent/v3 v3.15.2
-	github.com/opentracing/opentracing-go v1.2.0 // indirect
 	github.com/prometheus/client_golang v1.12.1
 	github.com/sirupsen/logrus v1.8.1
 	github.com/stretchr/testify v1.7.0
@@ -27,7 +26,7 @@ require (
 	golang.org/x/sys v0.0.0-20220310020820-b874c991c1a5
 	golang.org/x/text v0.3.7
 	google.golang.org/api v0.71.0
-	gopkg.in/DataDog/dd-trace-go.v1 v1.36.2
+	gopkg.in/DataDog/dd-trace-go.v1 v1.37.0
 )
 
 replace git.apache.org/thrift.git => github.com/apache/thrift v0.0.0-20180902110319-2566ecd5d999
