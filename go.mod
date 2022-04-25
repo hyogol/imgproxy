@@ -22,10 +22,10 @@ require (
 	github.com/stretchr/testify v1.7.1
 	go.uber.org/automaxprocs v1.4.0
 	golang.org/x/image v0.0.0-20220321031419-a8550c1d254a
-	golang.org/x/net v0.0.0-20220225172249-27dd8689420f
-	golang.org/x/sys v0.0.0-20220319134239-a9b59b0215f8
+	golang.org/x/net v0.0.0-20220412020605-290c469a71a5
+	golang.org/x/sys v0.0.0-20220412211240-33da011f77ad
 	golang.org/x/text v0.3.7
-	google.golang.org/api v0.73.0
+	google.golang.org/api v0.75.0
 	gopkg.in/DataDog/dd-trace-go.v1 v1.37.0
 )
 
