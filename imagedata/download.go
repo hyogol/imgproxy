@@ -7,7 +7,6 @@ import (
 	"io"
 	"net/http"
 	"net/http/cookiejar"
-	"net/url"
 	"strings"
 	"time"
 
@@ -17,6 +16,7 @@ import (
 
 	defaultTransport "github.com/imgproxy/imgproxy/v3/transport"
 	azureTransport "github.com/imgproxy/imgproxy/v3/transport/azure"
+	transportCommon "github.com/imgproxy/imgproxy/v3/transport/common"
 	fsTransport "github.com/imgproxy/imgproxy/v3/transport/fs"
 	gcsTransport "github.com/imgproxy/imgproxy/v3/transport/gcs"
 	s3Transport "github.com/imgproxy/imgproxy/v3/transport/s3"
@@ -134,21 +134,12 @@ func headersToStore(res *http.Response) map[string]string {
 func BuildImageRequest(ctx context.Context, imageURL string, header http.Header, jar *cookiejar.Jar) (*http.Request, context.CancelFunc, error) {
 	reqCtx, reqCancel := context.WithTimeout(ctx, time.Duration(config.DownloadTimeout)*time.Second)
 
+	imageURL = transportCommon.EscapeURL(imageURL)
+
 	req, err := http.NewRequestWithContext(reqCtx, "GET", imageURL, nil)
 	if err != nil {
 		reqCancel()
 		return nil, func() {}, ierrors.New(404, err.Error(), msgSourceImageIsUnreachable)
-	}
-
-	// S3, GCS, etc object keys may contain `#` symbol.
-	// `url.ParseRequestURI` unlike `url.Parse` does not cut-off the fragment part from the URL path.
-	if req.URL.Scheme != "http" && req.URL.Scheme != "https" {
-		u, err := url.ParseRequestURI(imageURL)
-		if err != nil {
-			reqCancel()
-			return nil, func() {}, ierrors.New(404, err.Error(), msgSourceImageIsUnreachable)
-		}
-		req.URL = u
 	}
 
 	if _, ok := enabledSchemes[req.URL.Scheme]; !ok {
@@ -178,8 +169,22 @@ func BuildImageRequest(ctx context.Context, imageURL string, header http.Header,
 }
 
 func SendRequest(req *http.Request) (*http.Response, error) {
+	var client *http.Client
+	if req.URL.Scheme == "http" || req.URL.Scheme == "https" {
+		clientCopy := *downloadClient
+
+		jar, err := cookiejar.New(nil)
+		if err != nil {
+			return nil, err
+		}
+		clientCopy.Jar = jar
+		client = &clientCopy
+	} else {
+		client = downloadClient
+	}
+
 	for {
-		res, err := downloadClient.Do(req)
+		res, err := client.Do(req)
 		if err == nil {
 			return res, nil
 		}
