@@ -1,12 +1,86 @@
 # Changelog
 
 ## [Unreleased]
+### Added
+- Add [IMGPROXY_BASE64_URL_INCLUDES_FILENAME](https://docs.imgproxy.net/latest/configuration/options#IMGPROXY_BASE64_URL_INCLUDES_FILENAME) config.
+- Add [IMGPROXY_COOKIE_PASSTHROUGH_ALL](https://docs.imgproxy.net/latest/configuration/options#IMGPROXY_COOKIE_PASSTHROUGH_ALL) config.
+- (pro) Add PNG EXIF and XMP data to the `/info` endpoint response.
+
+### Changed
+- Treat 206 (Partial Content) responses from a source server as 200 (OK) when they contain a full content range.
+- Improved error reporting.
+- (pro) Change saturation adjustment algorithm to be more CIE-correct.
+- (pro) Don't check image complexity during best format selection when `IMGPROXY_BEST_FORMAT_COMPLEXITY_THRESHOLD` is set to `0`.
+
+### Fixed
+- Fix determinimg the default hostname for cookies passthrough.
+- (pro) Fix setting the `Host` header with the `IMGPROXY_CUSTOM_REQUEST_HEADERS` config.
+- (pro) Fix passing through the `Host` header with the `IMGPROXY_REQUEST_HEADERS_PASSTHROUGH` config.
+- (pro) Fix passing through request headers with the `IMGPROXY_REQUEST_HEADERS_PASSTHROUGH` when the `raw` option is used.
+- (pro) Fix `IMGPROXY_BEST_FORMAT_ALLOW_SKIPS` config behavior.
+
+## [3.27.2] - 2025-01-27
+### Fixed
+- Fix preventing requests to `0.0.0.0` when imgproxy is configured to deny loopback addresses.
+- (pro) Fix timeouts in AWS Lambda when running in development mode.
+
+## [3.27.1] - 2025-01-13
+### Added
+- Add [IMGPROXY_SOURCE_URL_QUERY_SEPARATOR](https://docs.imgproxy.net/latest/configuration/options#IMGPROXY_SOURCE_URL_QUERY_SEPARATOR) config.
+- (pro) Add YOLOv11 object detection model support.
+
+### Changed
+- (pro) Improve image complexity calculation for best format selection.
+- (pro) Use PNG quantization for very low-complexity images when the `best` format is used.
+
+### Fixed
+- Fix blur and sharpen performance for images with alpha channel.
+- (pro) Fix object detecttion accuracy.
+
+## [3.27.0] - 2024-12-18
+### Add
+- Add JPEG XL (JXL) support.
+- Add PSD (Photoshop Document) and PSB (Photoshop Big) images support.
+- Add [IMGPROXY_AUTO_JXL](https://docs.imgproxy.net/latest/configuration/options#IMGPROXY_AUTO_JXL), [IMGPROXY_ENFORCE_JXL](https://docs.imgproxy.net/latest/configuration/options#IMGPROXY_ENFORCE_JXL), and [IMGPROXY_JXL_EFFORT](https://docs.imgproxy.net/latest/configuration/options#IMGPROXY_JXL_EFFORT) configs.
+- (pro) Add [IMGPROXY_AUTOQUALITY_JXL_NET](https://docs.imgproxy.net/latest/configuration/options#IMGPROXY_AUTOQUALITY_JXL_NET) config.
+- (pro) Add [objects_position](https://docs.imgproxy.net/latest/usage/processing#objects-position) processing and info options.
+- (pro) Add [IMGPROXY_OBJECT_DETECTION_SWAP_RB](https://docs.imgproxy.net/latest/configuration/options#IMGPROXY_OBJECT_DETECTION_SWAP_RB) config.
+- (pro) Add [IMGPROXY_OBJECT_DETECTION_GRAVITY_MODE](https://docs.imgproxy.net/latest/configuration/options#IMGPROXY_OBJECT_DETECTION_GRAVITY_MODE) config.
+
+### Changed
+- Change `IMGPROXY_AVIF_SPEED` default value to `8`.
+- Change `IMGPROXY_FORMAT_QUALITY` default value to `webp=79,avif=63,jxl=77`.
+- Rename `IMGPROXY_ENABLE_WEBP_DETECTION` to `IMGPROXY_AUTO_WEBP`. The old name is deprecated but still supported.
+- Rename `IMGPROXY_ENABLE_AVIF_DETECTION` to `IMGPROXY_AUTO_AVIF`. The old name is deprecated but still supported.
+- (pro) Change `IMGPROXY_AUTOQUALITY_FORMAT_MIN` default value to `avif=60`.
+- (pro) Change `IMGPROXY_AUTOQUALITY_FORMAT_MAX` default value to `avif=65`.
+- (pro) Use the last page/frame of the source image when the `page` processing option value is greater than or equal to the number of pages/frames in the source image.
+
+### Fixed
+- Fix detecting of width and height of HEIF images that include `irot` boxes.
+- Set `Error` status for errorred traces in OpenTelemetry.
+- Fix URL parsing error when a non-http(s) URL contains a `%` symbol outside of the percent-encoded sequence.
+- Fix importing ICC profiles for 16-bit images with an alpha channel.
+- Fix handling ICC profiles with vips 8.15+.
+- (pro) Fix opject detection accuracy when using YOLOv8 or YOLOv10 models.
+- (pro) Fix usage of the `obj` and `objw` gravity types inside the `crop` processing option.
+- (pro) Fix detecting of width and height when orientation is specified in EXIF but EXIF info is not requested.
+- (pro) Fix watermark shadow clipping.
+
+### Deprecated
+- `IMGPROXY_ENABLE_WEBP_DETECTION` config is deprecated. Use `IMGPROXY_AUTO_WEBP` instead.
+- `IMGPROXY_ENABLE_AVIF_DETECTION` config is deprecated. Use `IMGPROXY_AUTO_AVIF` instead.
+
+## [3.26.1] - 2024-10-28
 ### Changed
 - (pro) Improve `monochrome` and `duotone` processing options.
 
 ### Fixed
 - Fix loading log configs from local files and secret managers.
+- Fix detecting HEIF images with the `heix` brand.
+- Fix downloading source images when the image source requires a cookie challenge.
 - (pro) Fix playback of videos created from animations in Google Chrome.
+- (pro) Fix detecting of width and height of HEIF images that have orientation specified in EXIF.
 
 ## [3.26.0] - 2024-09-16
 ### Added
