@@ -225,7 +225,6 @@ func (s *ProcessingHandlerTestSuite) TestSourceNetworkValidation() {
 	var rw *httptest.ResponseRecorder
 
 	u := fmt.Sprintf("/unsafe/rs:fill:4:4/plain/%s/test1.png", server.URL)
-	fmt.Println(u)
 
 	rw = s.send(u)
 	s.Require().Equal(200, rw.Result().StatusCode)
@@ -374,7 +373,7 @@ func (s *ProcessingHandlerTestSuite) TestCacheControlPassthroughExpires() {
 	res := rw.Result()
 
 	// Use regex to allow some delay
-	s.Require().Regexp(regexp.MustCompile("max-age=123[0-9], public"), res.Header.Get("Cache-Control"))
+	s.Require().Regexp("max-age=123[0-9], public", res.Header.Get("Cache-Control"))
 	s.Require().Empty(res.Header.Get("Expires"))
 }
 
